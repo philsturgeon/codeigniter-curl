@@ -11,6 +11,7 @@ class cURL {
     private $session;           // Contains the cURL handler for a session
     private $url;               // URL of the session
     private $options = array(); // Populates curl_setopt_array
+    private $headers = array(); // Populates extra HTTP headers
     
     public $error_code;         // Error code returned as an int
     public $error_string;       // Error message returned as a string
@@ -52,6 +53,17 @@ class cURL {
     	$this->create($url);
         
         $this->post($params, $options);
+        
+        return $this->execute();
+    }
+ 
+    // Send a post request on its way with optional parameters (and get output)
+    // $url = '', $params = array(), $options = array()
+    public function simple_put($url, $params = array(), $options = array())
+    { 
+    	$this->create($url);
+        
+        $this->put($params, $options);
         
         return $this->execute();
     }
@@ -110,6 +122,21 @@ class cURL {
         // Add in the specific options provided
         $this->options($options);
         
+        $this->http_method('put');
+        
+        $this->option(CURLOPT_POSTFIELDS, $params);
+    }
+    
+    public function put($params = array(), $options = array()) { 
+        
+        // If its an array (instead of a query string) then format it correctly
+        if(is_array($params)) {
+            $params = http_build_query($params);
+        }
+        
+        // Add in the specific options provided
+        $this->options($options);
+        
         $this->option(CURLOPT_POST, TRUE);
         $this->option(CURLOPT_POSTFIELDS, $params);
     }
@@ -122,6 +149,11 @@ class cURL {
         
         $this->option(CURLOPT_COOKIE, $params);
         return $this;
+    }
+    
+    public function http_header($header_string)
+    {
+		$this->headers[] = $header_string;
     }
     
     public function http_method($method)
@@ -192,6 +224,11 @@ class cURL {
         if(!isset($this->options[CURLOPT_RETURNTRANSFER]))    $this->options[CURLOPT_RETURNTRANSFER] = TRUE;
         if(!isset($this->options[CURLOPT_FOLLOWLOCATION]))    $this->options[CURLOPT_FOLLOWLOCATION] = TRUE;
         if(!isset($this->options[CURLOPT_FAILONERROR]))       $this->options[CURLOPT_FAILONERROR] = TRUE;
+
+		if(!empty($this->headers))
+		{
+			$this->option(CURLOPT_HTTPHEADER, $this->headers); 
+		}
 
         $this->options();
 
