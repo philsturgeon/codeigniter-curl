@@ -16,7 +16,8 @@ class cURL {
     public $error_string;       // Error message returned as a string
     public $info;               // Returned after request (elapsed time, etc)
     
-    function __construct($url = '') {
+    function __construct($url = '')
+    {
         $this->CI =& get_instance();
         log_message('debug', 'cURL Class Initialized');
         
@@ -33,8 +34,8 @@ class cURL {
      * ================================================================================= */
  
     // Return a get request results
-    public function simple_get($url, $options = array()) {
-
+    public function simple_get($url, $options = array())
+    {
         // If a URL is provided, create new session
         $this->create($url);
 
@@ -46,16 +47,26 @@ class cURL {
  
     // Send a post request on its way with optional parameters (and get output)
     // $url = '', $params = array(), $options = array()
-    public function simple_post($url, $params = array(), $options = array()) { 
+    public function simple_post($url, $params = array(), $options = array())
+    { 
     	$this->create($url);
         
         $this->post($params, $options);
         
         return $this->execute();
     }
+ 
+    // Send a post request on its way with optional parameters (and get output)
+    // $url = '', $params = array(), $options = array()
+    public function simple_delete($url)
+    { 
+    	$this->create($url);
+		$this->http_method('delete');		        
+        return $this->execute();
+    }
     
-    public function simple_ftp_get($url, $file_path, $username = '', $password = '') {
-        
+    public function simple_ftp_get($url, $file_path, $username = '', $password = '')
+    {
         // If there is no ftp:// or any protocol entered, add ftp://
         if(!preg_match('!^(ftp|sftp)://! i', $url)) {
             $url = 'ftp://'.$url;
@@ -110,6 +121,12 @@ class cURL {
         }
         
         $this->option(CURLOPT_COOKIE, $params);
+        return $this;
+    }
+    
+    public function http_method($method)
+    {
+    	$this->options[CURLOPT_CUSTOMREQUEST] = strtoupper($method);
         return $this;
     }
     
@@ -214,4 +231,3 @@ class cURL {
 
 /* End of file cURL.php */
 /* Location: ./application/libraries/cURL.php */
-?>
