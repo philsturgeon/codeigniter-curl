@@ -8,7 +8,9 @@ class cURL {
 	
     private $CI;                // CodeIgniter instance
     
-    private $session;           // Contains the cURL handler for a session
+    private $responce;          // Contains the cURL responce for debug
+   
+private $session;           // Contains the cURL handler for a session
     private $url;               // URL of the session
     private $options = array(); // Populates curl_setopt_array
     private $headers = array(); // Populates extra HTTP headers
@@ -50,31 +52,33 @@ class cURL {
     // $url = '', $params = array(), $options = array()
     public function simple_post($url, $params = array(), $options = array())
     { 
-    	$this->create($url);
+		$this->create($url);
         
-        $this->post($params, $options);
+		$this->post($params, $options);
         
-        return $this->execute();
+		return $this->execute();
     }
  
     // Send a post request on its way with optional parameters (and get output)
     // $url = '', $params = array(), $options = array()
     public function simple_put($url, $params = array(), $options = array())
     { 
-    	$this->create($url);
+		$this->create($url);
         
-        $this->put($params, $options);
+		$this->put($params, $options);
         
-        return $this->execute();
+		return $this->execute();
     }
  
     // Send a post request on its way with optional parameters (and get output)
     // $url = '', $params = array(), $options = array()
     public function simple_delete($url)
     { 
-    	$this->create($url);
-		$this->http_method('delete');		        
-        return $this->execute();
+		$this->create($url);
+    	
+		$this->http_method('delete');
+			        
+		return $this->execute();
     }
     
     public function simple_ftp_get($url, $file_path, $username = '', $password = '')
@@ -122,8 +126,9 @@ class cURL {
         // Add in the specific options provided
         $this->options($options);
         
-        $this->http_method('put');
+        $this->http_method('post');
         
+        $this->option(CURLOPT_POST, TRUE);
         $this->option(CURLOPT_POSTFIELDS, $params);
     }
     
@@ -137,7 +142,7 @@ class cURL {
         // Add in the specific options provided
         $this->options($options);
         
-        $this->option(CURLOPT_POST, TRUE);
+        $this->option(CURLOPT_PUT, TRUE);
         $this->option(CURLOPT_POSTFIELDS, $params);
     }
     
@@ -162,7 +167,9 @@ class cURL {
         return $this;
     }
     
-    public function http_login($username = '', $password = '') {
+    public function http_login($username = '', $password = '', $type = 'any')
+    {
+		$this->option(CURLOPT_HTTPAUTH, constant('CURLAUTH_'.strtoupper($type) ));
         $this->option(CURLOPT_USERPWD, $username.':'.$password);
         return $this;
     }
@@ -233,10 +240,10 @@ class cURL {
         $this->options();
 
         // Execute the request
-        $return = curl_exec($this->session);
+        $this->responce = curl_exec($this->session);
         
         // Request failed
-        if($return === FALSE)
+        if($this->responce === FALSE)
         {
             $this->error_code = curl_errno($this->session);
             $this->error_string = curl_error($this->session);
@@ -252,12 +259,37 @@ class cURL {
             
             curl_close($this->session);
             $this->session = NULL;
-            return $return;
+            return $this->responce;
         }
         
     }
     
+    
+    public function debug()
+    {
+        echo "=============================================<br/>\n";
+        echo "<h2>CURL Test</h2>\n";
+        echo "=============================================<br/>\n";
+        echo "<h3>Responce</h3>\n";
+        echo "<code>".nl2br(htmlentities($this->responce))."</code><br/>\n\n";
+    
+        if($this->error_string)
+        {
+    	    echo "=============================================<br/>\n";
+    	    echo "<h3>Errors</h3>";
+    	    echo "<strong>Code:</strong> ".$this->error_code."<br/>\n";
+    	    echo "<strong>Message:</strong> ".$this->error_string."<br/>\n";
+        }
+    
+        echo "=============================================<br/>\n";
+        echo "<h3>Info</h3>";
+        echo "<pre>";
+        print_r($this->info);
+        echo "</pre>";
+	}
+    
     private function set_defaults() {
+        $this->responce = '';
         $this->info = array();
         $this->options = array();
         $this->error_code = 0;
