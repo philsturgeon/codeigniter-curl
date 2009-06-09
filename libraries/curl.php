@@ -4,7 +4,7 @@
  * @created 9 Dec 2008
  */
 
-class cURL {
+class Curl {
 	
     private $CI;                // CodeIgniter instance
     
@@ -301,4 +301,4 @@ class cURL {
 // END cURL Class
 
 /* End of file cURL.php */
-/* Location: ./application/libraries/cURL.php */
+/* Location: ./application/libraries/curl.php */
