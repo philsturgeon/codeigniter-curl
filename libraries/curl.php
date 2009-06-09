@@ -10,7 +10,7 @@ class cURL {
     
     private $responce;          // Contains the cURL responce for debug
    
-private $session;           // Contains the cURL handler for a session
+    private $session;           // Contains the cURL handler for a session
     private $url;               // URL of the session
     private $options = array(); // Populates curl_setopt_array
     private $headers = array(); // Populates extra HTTP headers
@@ -186,17 +186,18 @@ private $session;           // Contains the cURL handler for a session
         return $this;
     }
     
-    public function options($options = array()) {
-
+    public function options($options = array())
+    {
         // Merge options in with the rest - done as array_merge() does not overwrite numeric keys
-        foreach($options as $option_code => $option_value) {
+        foreach($options as $option_code => $option_value)
+        {
             $this->option($option_code, $option_value);
         }
         unset($option_code, $option_value);
 
         // Set all options provided
         curl_setopt_array($this->session, $this->options);
-        
+                
         return $this;
     }
     
@@ -224,8 +225,8 @@ private $session;           // Contains the cURL handler for a session
     }
     
     // End a session and return the results
-    public function execute() {
-        
+    public function execute()
+    {
         // Set two default options, and merge any extra ones in
         if(!isset($this->options[CURLOPT_TIMEOUT]))           $this->options[CURLOPT_TIMEOUT] = 30;
         if(!isset($this->options[CURLOPT_RETURNTRANSFER]))    $this->options[CURLOPT_RETURNTRANSFER] = TRUE;
@@ -239,9 +240,9 @@ private $session;           // Contains the cURL handler for a session
 
         $this->options();
 
-        // Execute the request
+        // Execute the request & and hide all output
         $this->responce = curl_exec($this->session);
-        
+
         // Request failed
         if($this->responce === FALSE)
         {
@@ -251,17 +252,17 @@ private $session;           // Contains the cURL handler for a session
             curl_close($this->session);
             $this->session = NULL;
             return FALSE;
+        } 
         
         // Request successful
-        } else {
-
+        else
+        {
             $this->info = curl_getinfo($this->session);
             
             curl_close($this->session);
             $this->session = NULL;
             return $this->responce;
         }
-        
     }
     
     
@@ -288,7 +289,8 @@ private $session;           // Contains the cURL handler for a session
         echo "</pre>";
 	}
     
-    private function set_defaults() {
+    private function set_defaults()
+    {
         $this->responce = '';
         $this->info = array();
         $this->options = array();
