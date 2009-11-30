@@ -70,13 +70,13 @@ class Curl {
 		return $this->execute();
     }
  
-    // Send a post request on its way with optional parameters (and get output)
-    // $url = '', $params = array(), $options = array()
-    public function simple_delete($url)
+    // Send a delete request on its way with optional parameters (and get output)
+    // $url = ''
+    public function simple_delete($url, $options = array())
     { 
 		$this->create($url);
     	
-		$this->http_method('delete');
+		$this->delete($options);
 			        
 		return $this->execute();
     }
@@ -115,7 +115,7 @@ class Curl {
      * ADVANCED METHODS 
      * Use these methods to build up more complex queries
      * ================================================================================= */
-     
+
     public function post($params = array(), $options = array()) { 
         
         // If its an array (instead of a query string) then format it correctly
@@ -144,6 +144,11 @@ class Curl {
         
         $this->option(CURLOPT_PUT, TRUE);
         $this->option(CURLOPT_POSTFIELDS, $params);
+    }
+    
+    public function delete($options = array())
+    {
+    	$this->http_method('delete');
     }
     
     public function set_cookies($params = array()) {
@@ -287,6 +292,13 @@ class Curl {
         echo "<pre>";
         print_r($this->info);
         echo "</pre>";
+	}
+	
+	public function debug_request()
+	{
+		return array(
+			'url' => $this->url
+		);
 	}
     
     private function set_defaults()
