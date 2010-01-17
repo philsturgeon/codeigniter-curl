@@ -7,6 +7,11 @@ class Curl_test extends Controller {
         $this->load->library('curl');
     }
 
+    function index()
+    {
+    	echo "Welcome to the cURL library demo. Please look at the 'curl_test.php' controller source code for a few examples.";
+    }
+    
     function simple_get()
     {
         $responce = $this->curl->simple_get('curl_test/get_message');
