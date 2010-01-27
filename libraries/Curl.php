@@ -38,7 +38,7 @@ class Curl {
     	{
     		$verb = str_replace('simple_', '', $method);
     		array_unshift($arguments, $verb);
-    		call_user_func_array(array($this, '_simple_call'), $arguments);
+    		return call_user_func_array(array($this, '_simple_call'), $arguments);
     	}
     }
     
