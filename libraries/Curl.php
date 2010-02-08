@@ -180,7 +180,7 @@ class Curl {
     
     public function proxy($url = '', $port = 80)
     {
-        $this->option(CURLOPT_HTTPPROXYTUNNEL. TRUE);
+        $this->option(CURLOPT_HTTPPROXYTUNNEL, TRUE);
         $this->option(CURLOPT_PROXY, $url.':'. $port);
         return $this;
     }
