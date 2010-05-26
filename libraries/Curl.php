@@ -6,7 +6,7 @@
 
 class Curl
 {
-    private $CI;                // CodeIgniter instance
+    private $_ci;                // CodeIgniter instance
     
     private $response;          // Contains the cURL response for debug
    
@@ -21,14 +21,15 @@ class Curl
     
     function __construct($url = '')
     {
-        $this->CI =& get_instance();
+        $this->_ci =& get_instance();
         log_message('debug', 'cURL Class Initialized');
         
-        if (!$this->is_enabled()) {
+        if (!$this->is_enabled())
+		{
             log_message('error', 'cURL Class - PHP was not built with cURL enabled. Rebuild PHP with --with-curl to use cURL.') ;
         }
         
-        if($url)
+        if ($url)
         {
         	$this->create($url);
         }
@@ -37,7 +38,7 @@ class Curl
     
     function __call($method, $arguments)
     {
-    	if(in_array($method, array('simple_get', 'simple_post', 'simple_put', 'simple_delete')))
+    	if (in_array($method, array('simple_get', 'simple_post', 'simple_put', 'simple_delete')))
     	{
     		$verb = str_replace('simple_', '', $method);
     		array_unshift($arguments, $verb);
@@ -67,16 +68,17 @@ class Curl
     public function simple_ftp_get($url, $file_path, $username = '', $password = '')
     {
         // If there is no ftp:// or any protocol entered, add ftp://
-        if(!preg_match('!^(ftp|sftp)://! i', $url)) {
+        if (!preg_match('!^(ftp|sftp)://! i', $url))
+		{
             $url = 'ftp://'.$url;
         }
         
         // Use an FTP login
-        if($username != '')
+        if ($username != '')
         {
             $auth_string = $username;
             
-            if($password != '')
+            if ($password != '')
             {
             	$auth_string .= ':'.$password;
             }
@@ -102,7 +104,7 @@ class Curl
     public function post($params = array(), $options = array())
 	{
         // If its an array (instead of a query string) then format it correctly
-        if(is_array($params))
+        if (is_array($params))
 		{
             $params = http_build_query($params, NULL, '&');
         }
@@ -119,7 +121,7 @@ class Curl
     public function put($params = array(), $options = array())
     { 
         // If its an array (instead of a query string) then format it correctly
-        if(is_array($params))
+        if (is_array($params))
         {
             $params = http_build_query($params, NULL, '&');
         }
@@ -137,7 +139,7 @@ class Curl
     public function delete($params, $options = array())
     {
         // If its an array (instead of a query string) then format it correctly
-        if(is_array($params))
+        if (is_array($params))
         {
             $params = http_build_query($params, NULL, '&');
         }
@@ -152,7 +154,7 @@ class Curl
     
     public function set_cookies($params = array())
     {
-        if(is_array($params))
+        if (is_array($params))
         {
             $params = http_build_query($params, NULL, '&');
         }
@@ -208,7 +210,7 @@ class Curl
     
     public function option($code, $value)
     {
-    	if(is_string($code) && !is_numeric($code))
+    	if (is_string($code) && !is_numeric($code))
     	{
     		$code = constant('CURLOPT_' . strtoupper($code));
     	}
@@ -224,9 +226,9 @@ class Curl
         $this->set_defaults();
 
         // If no a protocol in URL, assume its a CI link
-        if(!preg_match('!^\w+://! i', $url))
+        if (!preg_match('!^\w+://! i', $url))
         {
-            $this->CI->load->helper('url');
+            $this->_ci->load->helper('url');
             $url = site_url($url);
         }
         
@@ -240,12 +242,12 @@ class Curl
     public function execute()
     {
         // Set two default options, and merge any extra ones in
-        if(!isset($this->options[CURLOPT_TIMEOUT]))           $this->options[CURLOPT_TIMEOUT] = 30;
-        if(!isset($this->options[CURLOPT_RETURNTRANSFER]))    $this->options[CURLOPT_RETURNTRANSFER] = TRUE;
-        if(!isset($this->options[CURLOPT_FOLLOWLOCATION]))    $this->options[CURLOPT_FOLLOWLOCATION] = TRUE;
-        if(!isset($this->options[CURLOPT_FAILONERROR]))       $this->options[CURLOPT_FAILONERROR] = TRUE;
+        if (!isset($this->options[CURLOPT_TIMEOUT]))           $this->options[CURLOPT_TIMEOUT] = 30;
+        if (!isset($this->options[CURLOPT_RETURNTRANSFER]))    $this->options[CURLOPT_RETURNTRANSFER] = TRUE;
+        if (!isset($this->options[CURLOPT_FOLLOWLOCATION]))    $this->options[CURLOPT_FOLLOWLOCATION] = TRUE;
+        if (!isset($this->options[CURLOPT_FAILONERROR]))       $this->options[CURLOPT_FAILONERROR] = TRUE;
 
-		if(!empty($this->headers))
+		if (!empty($this->headers))
 		{
 			$this->option(CURLOPT_HTTPHEADER, $this->headers); 
 		}
@@ -256,7 +258,7 @@ class Curl
         $this->response = curl_exec($this->session);
 
         // Request failed
-        if($this->response === FALSE)
+        if ($this->response === FALSE)
         {
             $this->error_code = curl_errno($this->session);
             $this->error_string = curl_error($this->session);
@@ -290,7 +292,7 @@ class Curl
         echo "<h3>response</h3>\n";
         echo "<code>".nl2br(htmlentities($this->response))."</code><br/>\n\n";
     
-        if($this->error_string)
+        if ($this->error_string)
         {
     	    echo "=============================================<br/>\n";
     	    echo "<h3>Errors</h3>";
