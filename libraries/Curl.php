@@ -4,8 +4,8 @@
  * @created 9 Dec 2008
  */
 
-class Curl {
-	
+class Curl
+{
     private $CI;                // CodeIgniter instance
     
     private $response;          // Contains the cURL response for debug
@@ -99,11 +99,12 @@ class Curl {
      * Use these methods to build up more complex queries
      * ================================================================================= */
 
-    public function post($params = array(), $options = array()) { 
-        
+    public function post($params = array(), $options = array())
+	{
         // If its an array (instead of a query string) then format it correctly
-        if(is_array($params)) {
-            $params = http_build_query($params);
+        if(is_array($params))
+		{
+            $params = http_build_query($params, NULL, '&');
         }
         
         // Add in the specific options provided
@@ -120,7 +121,7 @@ class Curl {
         // If its an array (instead of a query string) then format it correctly
         if(is_array($params))
         {
-            $params = http_build_query($params);
+            $params = http_build_query($params, NULL, '&');
         }
         
         // Add in the specific options provided
@@ -138,7 +139,7 @@ class Curl {
         // If its an array (instead of a query string) then format it correctly
         if(is_array($params))
         {
-            $params = http_build_query($params);
+            $params = http_build_query($params, NULL, '&');
         }
         
         // Add in the specific options provided
@@ -153,7 +154,7 @@ class Curl {
     {
         if(is_array($params))
         {
-            $params = http_build_query($params);
+            $params = http_build_query($params, NULL, '&');
         }
         
         $this->option(CURLOPT_COOKIE, $params);
