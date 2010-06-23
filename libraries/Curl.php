@@ -1,7 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * @author Philip Sturgeon
- * @created 9 Dec 2008
+ * Curl Class
+ *
+ * @package		Module Creator
+ * @subpackage	ThirdParty
+ * @category	Libraries
+ * @author		Philip Sturgeon
+ * @copyright	Copyright (c) 2008 - 2010, Phil Sturgeon
+ * @created			09/12/2008
  */
 
 class Curl
@@ -40,6 +46,7 @@ class Curl
     {
     	if (in_array($method, array('simple_get', 'simple_post', 'simple_put', 'simple_delete')))
     	{
+    		// Take off the "simple_" and past get/post/put/delete to _simple_call
     		$verb = str_replace('simple_', '', $method);
     		array_unshift($arguments, $verb);
     		return call_user_func_array(array($this, '_simple_call'), $arguments);
