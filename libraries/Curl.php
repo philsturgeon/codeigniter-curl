@@ -14,12 +14,12 @@
  */
 class Curl {
 
-	private $_ci;				// CodeIgniter instance
-	private $response = '';		  // Contains the cURL response for debug
-	private $session;		   // Contains the cURL handler for a session
-	private $url;			   // URL of the session
-	private $options = array(); // Populates curl_setopt_array
-	private $headers = array(); // Populates extra HTTP headers
+	protected $_ci;				// CodeIgniter instance
+	protected $response = '';		  // Contains the cURL response for debug
+	protected $session;		   // Contains the cURL handler for a session
+	protected $url;			   // URL of the session
+	protected $options = array(); // Populates curl_setopt_array
+	protected $headers = array(); // Populates extra HTTP headers
 	public $error_code;		 // Error code returned as an int
 	public $error_string;	   // Error message returned as a string
 	public $info;			   // Returned after request (elapsed time, etc)
@@ -356,7 +356,7 @@ class Curl {
 		);
 	}
 
-	private function set_defaults()
+	public function set_defaults()
 	{
 		$this->response = '';
 		$this->headers = array();
