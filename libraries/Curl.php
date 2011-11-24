@@ -59,7 +59,7 @@ class Curl {
 		if ($method === 'get')
 		{
 			// If a URL is provided, create new session
-			$this->create($url.($params ? '?'.http_build_query($params) : ''));
+			$this->create($url.($params ? '?'.http_build_query($params, NULL, '&') : ''));
 		}
 
 		else
@@ -279,7 +279,7 @@ class Curl {
 		}
 
 		// Only set follow location if not running securely
-		if ( ! ini_get('safe_mode') && !ini_get('open_basedir'))
+		if ( ! ini_get('safe_mode') && ! ini_get('open_basedir'))
 		{
 			// Ok, follow location is not set already so lets set it to true
 			if ( ! isset($this->options[CURLOPT_FOLLOWLOCATION]))
