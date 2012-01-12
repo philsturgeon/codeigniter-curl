@@ -298,16 +298,19 @@ class Curl {
 		// Execute the request & and hide all output
 		$this->response = curl_exec($this->session);
 		$this->info = curl_getinfo($this->session);
-
+		
 		// Request failed
 		if ($this->response === FALSE)
 		{
-			$this->error_code = curl_errno($this->session);
-			$this->error_string = curl_error($this->session);
-
+			$errno = curl_errno($this->session);
+			$error = curl_error($this->session);
+			
 			curl_close($this->session);
 			$this->set_defaults();
-
+			
+			$this->error_code = $errno;
+			$this->error_string = $error;
+			
 			return FALSE;
 		}
 
