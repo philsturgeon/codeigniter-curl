@@ -318,9 +318,9 @@ class Curl {
 		else
 		{
 			curl_close($this->session);
-			$response = $this->response;
+			$this->last_response = $this->response;
 			$this->set_defaults();
-			return $response;
+			return $this->last_response;
 		}
 	}
 
@@ -335,7 +335,7 @@ class Curl {
 		echo "<h2>CURL Test</h2>\n";
 		echo "=============================================<br/>\n";
 		echo "<h3>Response</h3>\n";
-		echo "<code>" . nl2br(htmlentities($this->response)) . "</code><br/>\n\n";
+		echo "<code>" . nl2br(htmlentities($this->last_response)) . "</code><br/>\n\n";
 
 		if ($this->error_string)
 		{
