@@ -59,7 +59,7 @@ class Curl {
 		if ($method === 'get')
 		{
 			// If a URL is provided, create new session
-			$this->create($url.($params ? '?'.http_build_query($params) : ''));
+			$this->create($url.($params ? '?'.http_build_query($params, NULL, '&') : ''));
 		}
 
 		else
@@ -279,7 +279,7 @@ class Curl {
 		}
 
 		// Only set follow location if not running securely
-		if ( ! ini_get('safe_mode') && !ini_get('open_basedir'))
+		if ( ! ini_get('safe_mode') && ! ini_get('open_basedir'))
 		{
 			// Ok, follow location is not set already so lets set it to true
 			if ( ! isset($this->options[CURLOPT_FOLLOWLOCATION]))
@@ -298,16 +298,19 @@ class Curl {
 		// Execute the request & and hide all output
 		$this->response = curl_exec($this->session);
 		$this->info = curl_getinfo($this->session);
-
+		
 		// Request failed
 		if ($this->response === FALSE)
 		{
-			$this->error_code = curl_errno($this->session);
-			$this->error_string = curl_error($this->session);
-
+			$errno = curl_errno($this->session);
+			$error = curl_error($this->session);
+			
 			curl_close($this->session);
 			$this->set_defaults();
-
+			
+			$this->error_code = $errno;
+			$this->error_string = $error;
+			
 			return FALSE;
 		}
 
@@ -315,9 +318,9 @@ class Curl {
 		else
 		{
 			curl_close($this->session);
-			$response = $this->response;
+			$this->last_response = $this->response;
 			$this->set_defaults();
-			return $response;
+			return $this->last_response;
 		}
 	}
 
@@ -332,7 +335,7 @@ class Curl {
 		echo "<h2>CURL Test</h2>\n";
 		echo "=============================================<br/>\n";
 		echo "<h3>Response</h3>\n";
-		echo "<code>" . nl2br(htmlentities($this->response)) . "</code><br/>\n\n";
+		echo "<code>" . nl2br(htmlentities($this->last_response)) . "</code><br/>\n\n";
 
 		if ($this->error_string)
 		{
