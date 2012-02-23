@@ -177,6 +177,7 @@ class Curl {
 	public function http_header($header, $content = NULL)
 	{
 		$this->headers[] = $content ? $header . ': ' . $content : $header;
+		return $this;
 	}
 
 	public function http_method($method)
