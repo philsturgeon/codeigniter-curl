@@ -212,6 +212,7 @@ class Curl {
 		{
 			$this->option(CURLOPT_SSL_VERIFYPEER, TRUE);
 			$this->option(CURLOPT_SSL_VERIFYHOST, $verify_host);
+			if(isset($path_to_cert))$path_to_cert = realpath($path_to_cert);
 			$this->option(CURLOPT_CAINFO, $path_to_cert);
 		}
 		else
