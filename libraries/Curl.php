@@ -23,6 +23,7 @@ class Curl {
 	public $error_code;             // Error code returned as an int
 	public $error_string;           // Error message returned as a string
 	public $info;                   // Returned after request (elapsed time, etc)
+	public $response_headers;	// Array containing all response headers
 
 	function __construct($url = '')
 	{
@@ -281,6 +282,10 @@ class Curl {
 		{
 			$this->options[CURLOPT_FAILONERROR] = TRUE;
 		}
+		if ( ! isset($this->options[CURLOPT_HEADER]))
+		{
+			$this->options[CURLOPT_HEADER] = TRUE;
+		}
 
 		// Only set follow location if not running securely
 		if ( ! ini_get('safe_mode') && ! ini_get('open_basedir'))
@@ -302,6 +307,8 @@ class Curl {
 		// Execute the request & and hide all output
 		$this->response = curl_exec($this->session);
 		$this->info = curl_getinfo($this->session);
+		$this->response_headers = explode("\r\n\r\n", $this->response, $this->info['redirect_count'] + 2);
+		$this->body = array_pop($this->response_headers);
 		
 		// Request failed
 		if ($this->response === FALSE)
@@ -322,7 +329,7 @@ class Curl {
 		else
 		{
 			curl_close($this->session);
-			$this->last_response = $this->response;
+			$this->last_response = $this->body;
 			$this->set_defaults();
 			return $this->last_response;
 		}
