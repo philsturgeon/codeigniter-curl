@@ -177,7 +177,6 @@ class Curl {
 	public function http_header($header, $content = NULL)
 	{
 		$this->headers[] = $content ? $header . ': ' . $content : $header;
-		return $this;
 	}
 
 	public function http_method($method)
@@ -212,10 +211,7 @@ class Curl {
 		{
 			$this->option(CURLOPT_SSL_VERIFYPEER, TRUE);
 			$this->option(CURLOPT_SSL_VERIFYHOST, $verify_host);
-			if (isset($path_to_cert)) {
-				$path_to_cert = realpath($path_to_cert);
-				$this->option(CURLOPT_CAINFO, $path_to_cert);
-			}
+			$this->option(CURLOPT_CAINFO, $path_to_cert);
 		}
 		else
 		{
@@ -281,7 +277,10 @@ class Curl {
 		{
 			$this->options[CURLOPT_FAILONERROR] = TRUE;
 		}
-
+		if ( ! isset($this->options[CURLOPT_HEADER]))
+		{
+			$this->options[CURLOPT_HEADER] = TRUE;
+		}
 		// Only set follow location if not running securely
 		if ( ! ini_get('safe_mode') && ! ini_get('open_basedir'))
 		{
@@ -301,7 +300,11 @@ class Curl {
 
 		// Execute the request & and hide all output
 		$this->response = curl_exec($this->session);
+
 		$this->info = curl_getinfo($this->session);
+
+		$this->responseHeaders = explode("\r\n\r\n", $this->response, $this->info['redirect_count'] + 2);
+		$this->body = array_pop($this->responseHeaders);
 		
 		// Request failed
 		if ($this->response === FALSE)
@@ -322,7 +325,7 @@ class Curl {
 		else
 		{
 			curl_close($this->session);
-			$this->last_response = $this->response;
+			$this->last_response = $this->body;
 			$this->set_defaults();
 			return $this->last_response;
 		}
