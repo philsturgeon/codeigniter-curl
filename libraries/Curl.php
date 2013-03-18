@@ -308,6 +308,17 @@ class Curl {
 		$this->response = curl_exec($this->session);
 		$this->info = curl_getinfo($this->session);
 		$this->response_headers = explode("\r\n\r\n", $this->response, $this->info['redirect_count'] + 2);
+		foreach ($this->response_headers as $redirect => $headers)
+		{
+			$headers = explode("\r\n", $headers);
+			$this->response_headers[$redirect] = array();
+			$this->response_headers[$redirect]['Status'] = array_shift($headers);
+			foreach ($headers as $header_line)
+			{
+				list($key, $value) = explode(':', $header_line, 2);
+				$this->response_headers[$redirect][$key] = trim($value);
+			}
+		}
 		$this->body = array_pop($this->response_headers);
 		
 		// Request failed
