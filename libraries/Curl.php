@@ -146,7 +146,7 @@ class Curl {
 		// Override method, I think this overrides $_POST with PUT data but... we'll see eh?
 		$this->option(CURLOPT_HTTPHEADER, array('X-HTTP-Method-Override: PUT'));
 	}
-	
+
 	public function patch($params = array(), $options = array())
 	{
 		// If its an array (instead of a query string) then format it correctly
@@ -238,6 +238,7 @@ class Curl {
 		else
 		{
 			$this->option(CURLOPT_SSL_VERIFYPEER, FALSE);
+			$this->option(CURLOPT_SSL_VERIFYHOST, $verify_host);
 		}
 		return $this;
 	}
