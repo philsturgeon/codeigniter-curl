@@ -185,7 +185,7 @@ class Curl {
 	{
 		if (is_array($params))
 		{
-			$params = http_build_query($params, NULL, '&');
+			$params = http_build_query($params, NULL, ';');
 		}
 
 		$this->option(CURLOPT_COOKIE, $params);
@@ -317,9 +317,16 @@ class Curl {
 		}
 
 		$this->options();
-
+		
+		// Temp close session to prevent conflicting sessions
+		session_write_close();
+		
 		// Execute the request & and hide all output
 		$this->response = curl_exec($this->session);
+		
+		// Restart session
+		session_start();
+		
 		$this->info = curl_getinfo($this->session);
 
 		// Request failed
