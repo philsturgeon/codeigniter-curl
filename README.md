@@ -29,10 +29,6 @@ and makes more complicated cURL requests easier too.
 * Proxy support
 * Cookies
 
-## Download
-
-http://philsturgeon.co.uk/code/codeigniter-curl
-
 ## Examples
 
 	$this->load->library('curl'); 
