@@ -183,6 +183,7 @@ class Curl {
 
 	public function set_cookies($params = array())
 	{
+		//not working for internet explorer 8
 		if (is_array($params))
 		{
 			$params = http_build_query($params, NULL, '&');
