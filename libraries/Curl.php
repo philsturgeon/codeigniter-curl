@@ -115,8 +115,24 @@ class Curl {
 	public function post($params = array(), $options = array())
 	{
 		// If its an array (instead of a query string) then format it correctly
-		if (is_array($params))
-		{
+		if (is_array($params)){
+
+			//Process file array if it exists
+			if(isset($params['file'])){
+				if(function_exists('finfo_open')){
+					foreach ($params['file'] as $key => &$value) {
+						if(file_exists($value)){
+							$finfo_open = finfo_open(FILEINFO_MIME_TYPE);
+							$file_mime = @finfo_file($finfo_open, $value);
+							$this->option(CURLOPT_POSTFIELDS, new CurlFile($value, $file_mime, end(explode('/', $value))));
+						}
+					}
+				} else{
+					log_message('error', 'You need enable fileinfo php extension before call post with file path param');
+				}
+				unset($params['file']);
+			}
+			
 			$params = http_build_query($params, NULL, '&');
 		}
 
