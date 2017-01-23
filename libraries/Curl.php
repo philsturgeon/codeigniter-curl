@@ -112,16 +112,20 @@ class Curl {
 	 * Use these methods to build up more complex queries
 	 * ================================================================================= */
 
-	public function post($params = array(), $options = array())
+	public function post($params = array(), $options = array(), $convert = TRUE)
 	{
 		// If its an array (instead of a query string) then format it correctly
-		if (is_array($params))
+		// Skip query building if $convert == FALSE
+		if (is_array($params) && $convert)
 		{
 			$params = http_build_query($params, NULL, '&');
 		}
 
-		// Add in the specific options provided
-		$this->options($options);
+		// Add in the specific options if provided
+		if($options)
+		{
+			$this->options($options);
+		}
 
 		$this->http_method('post');
 
